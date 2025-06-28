@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- *  权限等最后全部接口开发完成在做
+ * 认证相关接口控制器。
+ * <p>
+ * 提供登录、测试等接口，后续权限相关接口开发完成后整合到这里。
+ * </p>
  */
 @RestController
 @RequestMapping("/api")
