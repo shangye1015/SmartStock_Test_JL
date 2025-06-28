@@ -5,6 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 统一接口响应封装类。
+ * <p>
+ * 该类用于封装接口的返回结果，包括状态码、提示信息和具体数据，
+ * 统一规范接口响应格式，方便前后端统一处理。
+ * </p>
+ *
+ * @param <T> 返回数据的类型
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -3,7 +3,7 @@ package net.luculent.trenddbmanage.warehouse.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.luculent.trenddbmanage.common.model.Result;
-import net.luculent.trenddbmanage.utils.PageResult;
+import net.luculent.trenddbmanage.common.model.PageResult;
 import net.luculent.trenddbmanage.utils.ResultUtils;
 import net.luculent.trenddbmanage.warehouse.dto.*;
 import net.luculent.trenddbmanage.warehouse.service.WarehouseService;

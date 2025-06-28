@@ -6,7 +6,7 @@ import net.luculent.trenddbmanage.user.dao.UserMapper;
 import net.luculent.trenddbmanage.user.dto.*;
 import net.luculent.trenddbmanage.user.entity.User;
 import net.luculent.trenddbmanage.user.service.UserService;
-import net.luculent.trenddbmanage.utils.PageResult;
+import net.luculent.trenddbmanage.common.model.PageResult;
 import org.springframework.stereotype.Service;
 import cn.hutool.core.bean.BeanUtil;
 

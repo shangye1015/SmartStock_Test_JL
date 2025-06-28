@@ -1,7 +1,7 @@
 package net.luculent.trenddbmanage.warehouse.service;
 
 
-import net.luculent.trenddbmanage.utils.PageResult;
+import net.luculent.trenddbmanage.common.model.PageResult;
 import net.luculent.trenddbmanage.warehouse.dto.*;
 
 public interface WarehouseService {

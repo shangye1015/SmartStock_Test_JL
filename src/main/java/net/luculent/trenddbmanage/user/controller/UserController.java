@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.luculent.trenddbmanage.common.model.Result;
 import net.luculent.trenddbmanage.user.dto.*;
 import net.luculent.trenddbmanage.user.service.UserService;
-import net.luculent.trenddbmanage.utils.PageResult;
+import net.luculent.trenddbmanage.common.model.PageResult;
 import net.luculent.trenddbmanage.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

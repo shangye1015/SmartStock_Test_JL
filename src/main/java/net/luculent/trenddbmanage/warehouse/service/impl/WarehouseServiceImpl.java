@@ -2,7 +2,7 @@ package net.luculent.trenddbmanage.warehouse.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
-import net.luculent.trenddbmanage.utils.PageResult;
+import net.luculent.trenddbmanage.common.model.PageResult;
 import net.luculent.trenddbmanage.warehouse.dao.WarehouseMapper;
 import net.luculent.trenddbmanage.warehouse.dto.*;
 import net.luculent.trenddbmanage.warehouse.entity.Warehouse;
