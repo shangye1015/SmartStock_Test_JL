@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ *  权限等最后全部接口开发完成在做
+ */
 @RestController
 @RequestMapping("/api")
 public class AuthController {
