@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: testDemo
+  datasource:
+    url: jdbc:sqlite:resource:test.db
+    driver-class-name: org.sqlite.JDBC
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - file:./jssdk
+server:
+  port: 20000
+  address: 127.0.0.1
+
+
+
