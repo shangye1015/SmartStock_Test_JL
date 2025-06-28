@@ -16,9 +16,6 @@ mybatis:
 server:
   port: 20000
   address: 127.0.0.1
-logging:
-  level:
-    root: debug
 
 
 

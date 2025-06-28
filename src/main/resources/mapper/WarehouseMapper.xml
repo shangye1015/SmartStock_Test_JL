@@ -5,12 +5,12 @@
 
 <mapper namespace="net.luculent.trenddbmanage.warehouse.dao.WarehouseMapper">
 
-    <insert id="insertWarehouse" parameterType="Warehouse">
+    <insert id="insertWarehouse" parameterType="net.luculent.trenddbmanage.warehouse.entity.Warehouse">
         INSERT INTO warehouse (code, name, address, manager, contact_phone, status, created_at)
         VALUES (#{code}, #{name}, #{address}, #{manager}, #{contactPhone}, #{status}, CURRENT_TIMESTAMP)
     </insert>
 
-    <update id="updateWarehouse" parameterType="Warehouse">
+    <update id="updateWarehouse" parameterType="net.luculent.trenddbmanage.warehouse.entity.Warehouse">
         UPDATE warehouse
         <set>
             <if test="code != null">code = #{code},</if>
@@ -27,11 +27,11 @@
         DELETE FROM warehouse WHERE id = #{id}
     </delete>
 
-    <select id="selectById" parameterType="int" resultType="Warehouse">
+    <select id="selectById" parameterType="int" resultType="net.luculent.trenddbmanage.warehouse.entity.Warehouse">
         SELECT * FROM warehouse WHERE id = #{id}
     </select>
 
-    <select id="selectListByConditions" resultType="Warehouse">
+    <select id="selectListByConditions" resultType="net.luculent.trenddbmanage.warehouse.entity.Warehouse">
         SELECT * FROM warehouse
         WHERE 1 = 1
         <if test="code != null and code != ''">

@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * @date 2025-06-28
  */
 @Service
+@SuppressWarnings("ALL")
 public class InventoryOrderServiceImpl implements InventoryOrderService {
 
     private final InventoryOrderMapper orderMapper;
@@ -134,7 +135,6 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
 
     @Override
     public PageResult<InventoryOrderResponse> listOrders(int page, int size) {
-        int offset = (page - 1) * size;
         List<InventoryOrder> orders = orderMapper.selectAll();
         int total = orders.size();
 

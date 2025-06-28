@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author 10159
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
