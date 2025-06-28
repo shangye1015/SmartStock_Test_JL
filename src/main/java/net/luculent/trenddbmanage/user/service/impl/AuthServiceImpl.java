@@ -1,9 +1,9 @@
-package net.luculent.trenddbmanage.login.service.impl;
+package net.luculent.trenddbmanage.user.service.impl;
 
-import net.luculent.trenddbmanage.login.dao.UserMapper;
-import net.luculent.trenddbmanage.login.dto.LoginResponse;
-import net.luculent.trenddbmanage.login.entity.User;
-import net.luculent.trenddbmanage.login.service.AuthService;
+import net.luculent.trenddbmanage.user.dao.UserMapper;
+import net.luculent.trenddbmanage.user.dto.LoginResponse;
+import net.luculent.trenddbmanage.user.entity.User;
+import net.luculent.trenddbmanage.user.service.AuthService;
 import net.luculent.trenddbmanage.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

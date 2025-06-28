@@ -1,4 +1,4 @@
-package net.luculent.trenddbmanage.login.dto;
+package net.luculent.trenddbmanage.user.dto;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;

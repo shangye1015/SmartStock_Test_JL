@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.luculent.trenddbmanage.user.dao.UserMapper">
+
+    <insert id="insertSelective" parameterType="User">
+        INSERT INTO t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="department != null">department,</if>
+            <if test="position != null">position,</if>
+            <if test="age != null">age,</if>
+            <if test="gender != null">gender,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="department != null">#{department},</if>
+            <if test="position != null">#{position},</if>
+            <if test="age != null">#{age},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="User">
+        UPDATE t_user
+        <set>
+            <if test="password != null">password = #{password},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="department != null">department = #{department},</if>
+            <if test="position != null">position = #{position},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+
+    <select id="findByUsernameLike" resultType="User">
+        SELECT * FROM t_user
+        <where>
+            <if test="username != null and username != ''">
+                username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByUsernameLike" resultType="int">
+        SELECT COUNT(*) FROM t_user
+        <where>
+            <if test="username != null and username != ''">
+                username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findByUsername" resultType="User">
+        SELECT * FROM t_user WHERE username = #{username}
+    </select>
+    <select id="findById" parameterType="int" resultType="User">
+        SELECT * FROM t_user WHERE id = #{id}
+    </select>
+
+
+</mapper>

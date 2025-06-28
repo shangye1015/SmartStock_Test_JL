@@ -1,4 +1,4 @@
-package net.luculent.trenddbmanage.login.entity;
+package net.luculent.trenddbmanage.user.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8" />
+<title>管理后台</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+<!-- sdk模式 -->
+<!-- <link rel="stylesheet" href="sdk/sdk.css" />
+<link rel="stylesheet" href="sdk/helper.css" />
+<link rel="stylesheet" href="sdk/sdk.js" /> -->
+<!-- cdn模式 -->
+<link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" title="default"/>
+<link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet"/>
+<link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet"/>
+<!-- 自定义css -->
+<!-- ${theme_css} -->
+<script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
+
+<!-- <script src="https://unpkg.com/amis@3.2.0/sdk/sdk.js"></script> -->
+<!-- <script src="https://unpkg.com/vue@2"></script> -->
+<script src="https://unpkg.com/history@4.10.1/umd/history.js"></script>
+
+<style>
+    html,
+            body,
+            .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            }
+
+            .loginTitle {
+            text-align: center;
+            }
+
+            .loginTitle p {
+            margin: 10px auto;
+            color: black;
+            font-size: 25px;
+            }
+</style>
+</head>
+
+<body>
+<div id="root" class="app-wrapper"></div>
+<script type="text/javascript">
+        (function() {
+        let amis = amisRequire('amis/embed');
+
+        // 清理掉vue控制台无效打印
+        // Vue.config.productionTip = false;
+        // Vue.config.devtools = false
+
+        // 全局后端url
+        const serverUrl = location.origin;
+
+        // 清理token
+        localStorage.removeItem("admins_token");
+
+        const app = {
+        type: 'page',
+        title: "",
+        style: {
+        "backgroundImage": "linear-gradient(180deg, #86a4e9, transparent)"
+        },
+        cssVars: {
+        "--Form-input-onFocused-borderColor": "#e8e9eb",
+        "--Form-input-onHover-borderColor": "#e8e9eb",
+        },
+        body: {
+        "type": "grid-2d",
+        "cols": 12,
+        "grids": [{
+        x: 5,
+        y: 5,
+        h: 1,
+        w: 4,
+        width: 200,
+        type: 'form',
+        mode: 'horizontal',
+        title: "",
+        api: {
+        // 登录接口
+        url: "/api/test",
+        method: "post",
+        dataType: "application/json",
+        adaptor: function(payload, response, api) {
+        if (payload.status == 0) {
+        // 存token到localStorage中
+        localStorage.setItem('admins_token', payload.data.access_token);
+        payload.msg = "登陆成功";
+        // 跳转到主页
+        location.href = "/html/user_list";
+        } else if (payload.status != 0) {
+        payload.msg = "登陆失败";
+        // 移除token
+        localStorage.removeItem('admins_token');
+        payload.data = {};
+
+        }
+        return payload;
+        },
+        requestAdaptor(api) {
+        api.body.password = api.body.password
+        }
+        },
+        panelClassName: "p-r p-l p-b-md",
+        body: [{
+        "type": "tpl",
+        "tpl": "<div class='loginTitle'><p>库存管理系统</p></div>"
+        },
+        {
+        type: "input-text",
+        label: false,
+        name: "username",
+        size: "full",
+        placeholder: "登陆名",
+        addOn: {
+        "label": "",
+        "type": "text",
+        "position": "left",
+        "icon": "fa fa-user"
+        },
+        },
+        {
+        type: "input-password",
+        label: false,
+        name: "password",
+        size: "full",
+        placeholder: "密码",
+        addOn: {
+        "label": "",
+        "type": "text",
+        "position": "left",
+        "icon": "fa fa-lock"
+        },
+        },
+        {
+        type: "checkbox",
+        label: false,
+        name: "record",
+        option: "记住密码"
+        },
+        {
+        type: "control",
+        label: false,
+        body: {
+        "type": "button",
+        "level": "primary",
+        "actionType": "submit",
+        "block": true,
+        "label": "登陆"
+        }
+        }
+        ]
+        }
+
+        ]
+        }
+        };
+
+        let amisInstance = amis.embed(
+        '#root',
+        app, {
+        serverUrl: serverUrl
+        }, {
+        theme: 'cxd',
+        }
+        );
+
+        })();
+</script>
+</body>
+</html>
+
