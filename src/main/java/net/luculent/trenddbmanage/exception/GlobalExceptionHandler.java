@@ -1,7 +1,6 @@
 package net.luculent.trenddbmanage.exception;
 
 import net.luculent.trenddbmanage.common.model.Result;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
