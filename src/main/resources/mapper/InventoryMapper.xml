@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.luculent.trenddbmanage.inventory.dao.InventoryMapper">
+
+    <!-- 查询库存分页数据 -->
+    <select id="selectInventory" resultType="net.luculent.trenddbmanage.inventory.dto.InventoryResponse">
+        SELECT i.id AS inventoryId,
+        w.name AS warehouseName,
+        it.name AS itemName,
+        c.name AS categoryName,
+        it.specification,
+        it.unit,
+        i.quantity,
+        i.last_updated AS lastUpdated
+        FROM inventory i
+        LEFT JOIN warehouse w ON i.warehouse_id = w.id
+        LEFT JOIN item it ON i.item_id = it.id
+        LEFT JOIN category c ON it.category_id = c.id
+        WHERE 1=1
+        <if test="warehouseName != null and warehouseName != ''">
+            AND w.name LIKE '%' || #{warehouseName} || '%'
+        </if>
+        <if test="itemName != null and itemName != ''">
+            AND it.name LIKE '%' || #{itemName} || '%'
+        </if>
+        ORDER BY i.last_updated DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 查询库存总数量 -->
+    <select id="countInventory" resultType="int">
+        SELECT COUNT(1)
+        FROM inventory i
+        LEFT JOIN warehouse w ON i.warehouse_id = w.id
+        LEFT JOIN item it ON i.item_id = it.id
+        WHERE 1=1
+        <if test="warehouseName != null and warehouseName != ''">
+            AND w.name LIKE '%' || #{warehouseName} || '%'
+        </if>
+        <if test="itemName != null and itemName != ''">
+            AND it.name LIKE '%' || #{itemName} || '%'
+        </if>
+    </select>
+
+</mapper>
