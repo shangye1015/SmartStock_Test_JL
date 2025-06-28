@@ -33,4 +33,8 @@ public class InventoryController {
     public Result<PageResult<InventoryResponse>> listInventory(@Validated @RequestBody InventoryQueryRequest request) {
         return ResultUtils.success(inventoryService.queryInventory(request));
     }
+
+
+    // TODO: 可以做更多维度的库存盘点，库存明细，库存统计，这里示意下保证完整性即可
+
 }
