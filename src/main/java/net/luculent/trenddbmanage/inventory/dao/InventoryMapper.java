@@ -1,6 +1,7 @@
 package net.luculent.trenddbmanage.inventory.dao;
 
 import net.luculent.trenddbmanage.inventory.dto.InventoryResponse;
+import net.luculent.trenddbmanage.inventory.entity.Inventory;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,4 +41,12 @@ public interface InventoryMapper {
             @Param("warehouseName") String warehouseName,
             @Param("itemName") String itemName
     );
+
+    Inventory findByWarehouseAndItem(@Param("warehouseId") Integer warehouseId,
+                                     @Param("itemId") Integer itemId);
+
+    int insert(Inventory inventory);
+
+    int updateQuantity(@Param("id") Integer id,
+                       @Param("quantity") Integer quantity);
 }

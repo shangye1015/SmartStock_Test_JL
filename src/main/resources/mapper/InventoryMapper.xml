@@ -45,4 +45,21 @@
         </if>
     </select>
 
+    <!-- InventoryMapper.xml -->
+    <select id="findByWarehouseAndItem" resultType="net.luculent.trenddbmanage.inventory.entity.Inventory">
+        SELECT * FROM inventory WHERE warehouse_id = #{warehouseId} AND item_id = #{itemId}
+    </select>
+
+    <insert id="insert" parameterType="net.luculent.trenddbmanage.inventory.entity.Inventory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inventory (warehouse_id, item_id, quantity, last_updated)
+        VALUES (#{warehouseId}, #{itemId}, #{quantity}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="updateQuantity">
+        UPDATE inventory
+        SET quantity = #{quantity}, last_updated = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+
 </mapper>

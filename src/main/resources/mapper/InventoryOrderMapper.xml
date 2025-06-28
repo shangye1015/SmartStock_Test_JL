@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.luculent.trenddbmanage.warehouseflow.dao.InventoryOrderMapper">
+
+    <!-- 新增出入库单据 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inventory_order (
+            order_code, record_type, warehouse_id, operator, status, operation_time, remark
+        ) VALUES (
+                     #{orderCode}, #{recordType}, #{warehouseId}, #{operator}, #{status}, #{operationTime}, #{remark}
+                 )
+    </insert>
+
+    <!-- 更新出入库单据（仅支持 PENDING 状态时修改仓库与备注） -->
+    <update id="update">
+        UPDATE inventory_order
+        SET
+            warehouse_id = #{warehouseId},
+            remark = #{remark}
+        WHERE id = #{id} AND status = 'PENDING'
+    </update>
+
+    <!-- 删除出入库单据（仅允许 PENDING 状态删除） -->
+    <delete id="deleteById">
+        DELETE FROM inventory_order
+        WHERE id = #{id} AND status = 'PENDING'
+    </delete>
+
+    <!-- 根据 ID 查询单据 -->
+    <select id="selectById" resultType="net.luculent.trenddbmanage.warehouseflow.entity.InventoryOrder">
+        SELECT * FROM inventory_order WHERE id = #{id}
+    </select>
+
+    <!-- 查询全部出入库单据（按时间倒序） -->
+    <select id="selectAll" resultType="net.luculent.trenddbmanage.warehouseflow.entity.InventoryOrder">
+        SELECT * FROM inventory_order ORDER BY id DESC
+    </select>
+
+    <!-- 更新单据状态 -->
+    <update id="updateStatus">
+        UPDATE inventory_order
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+
+</mapper>

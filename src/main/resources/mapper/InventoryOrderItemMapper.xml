@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.luculent.trenddbmanage.warehouseflow.dao.InventoryOrderItemMapper">
+
+    <!-- 插入出入库明细记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inventory_order_item (
+            order_id, item_id, quantity
+        ) VALUES (
+                     #{orderId}, #{itemId}, #{quantity}
+                 )
+    </insert>
+
+    <!-- 删除某张单据的所有明细记录 -->
+    <delete id="deleteByOrderId">
+        DELETE FROM inventory_order_item WHERE order_id = #{orderId}
+    </delete>
+
+    <!-- 查询某张单据的所有明细记录 -->
+    <select id="selectByOrderId" resultType="net.luculent.trenddbmanage.warehouseflow.entity.InventoryOrderItem">
+        SELECT * FROM inventory_order_item WHERE order_id = #{orderId}
+    </select>
+
+</mapper>
