@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>库存统计首页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet" />
+    <script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
+    <style>
+        html, body, #root { margin: 0; padding: 0; height: 100%; }
+        .statistic-card {
+            border-radius: 6px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+            text-align: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .statistic-card:hover { background: #f0f6ff; }
+        .statistic-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #1890ff;
+        }
+        .statistic-value.low-stock { color: #fa541c; }
+        .statistic-title { font-size: 16px; color: #666; }
+        .statistic-suffix { font-size: 16px; color: #999; margin-left: 6px; }
+        /* 侧边栏背景色明亮 */
+        .aside-light {
+            background-color: #f9f9f9;
+            height: 100%;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+    (function() {
+        const amis = amisRequire('amis/embed');
+
+        const schema = {
+            type: "page",
+            title: "库存统计首页",
+            asideResizor: true,
+            asideSticky: true,
+            asideMinWidth: 180,
+            asideMaxWidth: 320,
+            asidePosition: "left",
+            aside: {
+                type: "nav",
+                className: "aside-light",
+                stacked: true,
+                source: [
+                    { "label": "首页", "icon": "fa fa-home", "link": "#", "active": true },
+                    { "label": "库存列表", "icon": "fa fa-list", "link": "#/inventory" },
+                    { "label": "出库管理", "icon": "fa fa-arrow-up", "link": "#/outbound" },
+                    { "label": "入库管理", "icon": "fa fa-arrow-down", "link": "#/inbound" },
+                    { "label": "库存统计", "icon": "fa fa-chart-bar", "link": "#/inventory-stat" },
+                    {
+                        "label": "报表中心",
+                        "icon": "fa fa-file-alt",
+                        "children": [
+                            { "label": "月度报表", "icon": "fa fa-calendar", "link": "#/reports/monthly" },
+                            { "label": "年度报表", "icon": "fa fa-calendar-alt", "link": "#/reports/yearly" },
+                            { "label": "自定义报表", "icon": "fa fa-sliders-h", "link": "#/reports/custom" }
+                        ]
+                    },
+                    { "label": "用户管理", "icon": "fa fa-user-cog", "link": "#/user-mgmt" },
+                    { "label": "系统设置", "icon": "fa fa-cogs", "link": "#/settings" }
+                ]
+            },
+            body: [
+                {
+                    type: "grid",
+                    columns: [
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">A仓库存总量</div>
+                    <div class="statistic-value">120<span class="statistic-suffix">件</span></div>
+                  </div>`
+                        },
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">B仓库存总量</div>
+                    <div class="statistic-value">180<span class="statistic-suffix">件</span></div>
+                  </div>`
+                        },
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">C仓库存总量</div>
+                    <div class="statistic-value">85<span class="statistic-suffix">件</span></div>
+                  </div>`
+                        }
+                    ]
+                },
+                {
+                    type: "grid",
+                    columns: [
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">总商品数</div>
+                    <div class="statistic-value">80<span class="statistic-suffix">种</span></div>
+                  </div>`
+                        },
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">库存总量</div>
+                    <div class="statistic-value">3200<span class="statistic-suffix">件</span></div>
+                  </div>`
+                        },
+                        {
+                            type: "tpl",
+                            tpl: `<div class="statistic-card">
+                    <div class="statistic-title">预警库存</div>
+                    <div class="statistic-value low-stock">5</div>
+                  </div>`
+                        }
+                    ]
+                },
+                {
+                    type: "grid",
+                    columns: [
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '各仓库存数量' },
+                                xAxis: { type: 'category', data: ['A仓', 'B仓', 'C仓'] },
+                                yAxis: { type: 'value' },
+                                series: [{
+                                    type: 'bar',
+                                    data: [120, 180, 85],
+                                    itemStyle: { color: '#1890ff' }
+                                }]
+                            }
+                        },
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '物品分类占比', left: 'center' },
+                                tooltip: { trigger: 'item' },
+                                legend: { bottom: 10 },
+                                series: [{
+                                    type: 'pie',
+                                    radius: '50%',
+                                    data: [
+                                        { value: 800, name: '办公用品' },
+                                        { value: 600, name: '办公设备' },
+                                        { value: 400, name: '办公家具' },
+                                        { value: 500, name: '电脑配件' }
+                                    ]
+                                }]
+                            }
+                        },
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '预警库存分布' },
+                                xAxis: { type: 'value' },
+                                yAxis: {
+                                    type: 'category',
+                                    data: ['打印纸', '文件夹', '胶水', '显示器', '打印机']
+                                },
+                                series: [{
+                                    type: 'bar',
+                                    data: [3, 10, 5, 8, 4],
+                                    itemStyle: { color: '#fa541c' }
+                                }]
+                            }
+                        }
+                    ]
+                },
+                {
+                    type: "grid",
+                    columns: [
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '各分类库存总量' },
+                                xAxis: { type: 'category', data: ['办公用品', '办公设备', '办公家具', '电脑配件'] },
+                                yAxis: { type: 'value' },
+                                series: [{
+                                    type: 'bar',
+                                    data: [900, 200, 150, 300],
+                                    itemStyle: { color: '#73c0de' }
+                                }]
+                            }
+                        },
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '各仓库低库存数量' },
+                                xAxis: { type: 'category', data: ['A仓', 'B仓', 'C仓'] },
+                                yAxis: { type: 'value' },
+                                series: [{
+                                    type: 'bar',
+                                    data: [2, 1, 2],
+                                    itemStyle: { color: '#fa8c16' }
+                                }]
+                            }
+                        },
+                        {
+                            type: "chart",
+                            config: {
+                                title: { text: '库存总量趋势（近6月）' },
+                                xAxis: { type: 'category', data: ['6月', '7月', '8月', '9月', '10月', '11月'] },
+                                yAxis: { type: 'value' },
+                                series: [{
+                                    type: 'line',
+                                    data: [2800, 2900, 3100, 3000, 3200, 3300],
+                                    smooth: true,
+                                    lineStyle: { color: '#52c41a' }
+                                }]
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        amis.embed('#root', schema);
+    })();
+</script>
+</body>
+</html>
