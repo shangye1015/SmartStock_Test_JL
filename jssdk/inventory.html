@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>库存统计</title>
+    <link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet" />
+    <script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
+    <style>
+        html, body, #root { margin: 0; padding: 0; height: 100%; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+    (function() {
+        const amis = amisRequire('amis/embed');
+
+        const schema = {
+            type: "page",
+            title: "库存统计",
+            body: {
+                type: "crud",
+                api: {
+                    method: "post",
+                    url: "/api/inventory/list",
+                    data: {
+                        page: "$page",
+                        size: "$perPage",
+                        warehouseName: "$warehouseName",
+                        itemName: "$itemName"
+                    },
+                    adaptor(payload) {
+                        return {
+                            status: 0,
+                            msg: 'success',
+                            data: {
+                                items: payload.data.records || [],
+                                total: payload.data.total || 0
+                            }
+                        };
+                    }
+                },
+                filter: {
+                    title: "筛选条件",
+                    body: {
+                        type: "form",
+                        mode: "inline",
+                        wrapWithPanel: false,
+                        submitText: "",
+                        controls: [
+                            {
+                                type: "text",
+                                name: "warehouseName",
+                                label: "仓库名称",
+                                placeholder: "模糊查询"
+                            },
+                            {
+                                type: "text",
+                                name: "itemName",
+                                label: "物品名称",
+                                placeholder: "模糊查询"
+                            },
+                            {
+                                type: "submit",
+                                label: "查询",
+                                level: "primary"
+                            },
+                            {
+                                type: "reset",
+                                label: "重置"
+                            }
+                        ]
+                    }
+                },
+                columns: [
+                    { name: "warehouseName", label: "仓库名称", sortable: true },
+                    { name: "itemName", label: "物品名称", sortable: true },
+                    { name: "categoryName", label: "分类名称" },
+                    { name: "specification", label: "规格" },
+                    { name: "unit", label: "单位" },
+                    { name: "quantity", label: "库存数量", type: "number", sortable: true },
+                    {
+                        name: "lastUpdated",
+                        label: "最后更新时间",
+                        type: "datetime",
+                        sortable: true,
+                        // 时间格式化，可根据后端格式调整
+                        // format: "YYYY-MM-DD HH:mm:ss"
+                    }
+                ],
+                perPage: 10,
+                pageField: "page",
+                perPageField: "size",
+                quickSaveApi: false,
+                bulkActions: []
+            }
+        };
+
+        amis.embed('#root', schema);
+    })();
+</script>
+</body>
+</html>
