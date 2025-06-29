@@ -5,13 +5,18 @@
 <mapper namespace="net.luculent.trenddbmanage.warehouseflow.dao.InventoryOrderItemMapper">
 
     <!-- 插入出入库明细记录 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="net.luculent.trenddbmanage.warehouseflow.entity.InventoryOrderItem">
         INSERT INTO inventory_order_item (
             order_id, item_id, quantity
         ) VALUES (
                      #{orderId}, #{itemId}, #{quantity}
                  )
     </insert>
+
+    <select id="selectLastInsertId" resultType="int">
+        SELECT last_insert_rowid()
+    </select>
+
 
     <!-- 删除某张单据的所有明细记录 -->
     <delete id="deleteByOrderId">
@@ -20,7 +25,14 @@
 
     <!-- 查询某张单据的所有明细记录 -->
     <select id="selectByOrderId" resultType="net.luculent.trenddbmanage.warehouseflow.entity.InventoryOrderItem">
-        SELECT * FROM inventory_order_item WHERE order_id = #{orderId}
+        SELECT
+            id,
+            order_id AS orderId,
+            item_id AS itemId,
+            quantity
+        FROM inventory_order_item
+        WHERE order_id = #{orderId}
     </select>
+
 
 </mapper>
