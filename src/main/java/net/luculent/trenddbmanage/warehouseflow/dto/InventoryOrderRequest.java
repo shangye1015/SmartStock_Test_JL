@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 public class InventoryOrderRequest {
 
-    @NotBlank(message = "单据编号不能为空")
     private Integer orderId;
 
     @NotNull(message = "出入库类型不能为空") // IN or OUT
