@@ -12,7 +12,6 @@
 <body>
 <div id="root"></div>
 
-<!-- 可以调用接口 -->
 <script>
     (function () {
         const amis = amisRequire('amis/embed');
@@ -27,7 +26,10 @@
                     url: "/api/user/list",
                     data: {
                         pageNum: "$page",
-                        pageSize: "$perPage"
+                        pageSize: "$perPage",
+                        name: "$name",
+                        department: "$department",
+                        role: "$role"
                     },
                     adaptor: function(payload) {
                         return {
@@ -40,10 +42,36 @@
                         };
                     }
                 },
+                filter: {
+                    title: "筛选条件",
+                    body: {
+                        type: "form",
+                        mode: "inline",
+                        wrapWithPanel: false,
+                        submitText: "",
+                        controls: [
+                            { type: "text", name: "name", label: "姓名", placeholder: "模糊查询" },
+                            { type: "text", name: "department", label: "单位", placeholder: "模糊查询" },
+                            {
+                                type: "select",
+                                name: "role",
+                                label: "角色",
+                                clearable: true,
+                                options: [
+                                    { label: "管理员", value: "管理员" },
+                                    { label: "普通用户", value: "普通用户" },
+                                    { label: "访客", value: "访客" }
+                                ]
+                            },
+                            { type: "submit", label: "查询", level: "primary" },
+                            { type: "reset", label: "重置" }
+                        ]
+                    }
+                },
                 columns: [
                     { name: "name", label: "姓名" },
                     { name: "phone", label: "电话" },
-                    { name: "org", label: "单位" },
+                    { name: "department", label: "单位" },
                     { name: "gender", label: "性别" },
                     { name: "role", label: "角色" },
                     {
@@ -67,7 +95,7 @@
                                             { type: "hidden", name: "id" },
                                             { type: "text", name: "name", label: "姓名", required: true },
                                             { type: "text", name: "phone", label: "电话", required: true },
-                                            { type: "text", name: "org", label: "单位" },
+                                            { type: "text", name: "department", label: "单位" },
                                             {
                                                 type: "select",
                                                 name: "gender",
@@ -124,7 +152,7 @@
                                 controls: [
                                     { type: "text", name: "name", label: "姓名", required: true },
                                     { type: "text", name: "phone", label: "电话", required: true },
-                                    { type: "text", name: "org", label: "单位" },
+                                    { type: "text", name: "department", label: "单位" },
                                     {
                                         type: "select",
                                         name: "gender",
