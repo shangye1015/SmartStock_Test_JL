@@ -12,6 +12,7 @@
 <body>
 <div id="root"></div>
 
+<!-- 可以调用接口 -->
 <script>
     (function () {
         const amis = amisRequire('amis/embed');
@@ -25,24 +26,26 @@
                     method: "post",
                     url: "/api/user/list",
                     data: {
-                        page: "$page",
-                        perPage: "$perPage"
+                        pageNum: "$page",
+                        pageSize: "$perPage"
                     },
-                    responseData: {
-                        items: [
-                            { id: 1, name: "张三", phone: "13800138000", org: "技术部", gender: "男", role: "管理员", password: "******" },
-                            { id: 2, name: "李四", phone: "13800138001", org: "财务部", gender: "女", role: "普通用户", password: "******" }
-                        ],
-                        total: 2
+                    adaptor: function(payload) {
+                        return {
+                            status: 0,
+                            msg: "success",
+                            data: {
+                                items: payload.data.records || [],
+                                total: payload.data.total || 0
+                            }
+                        };
                     }
                 },
                 columns: [
-                    { name: "name", label: "姓名", type: "text" },
-                    { name: "phone", label: "电话", type: "text" },
-                    { name: "org", label: "单位", type: "text" },
-                    { name: "gender", label: "性别", type: "text" },
-                    { name: "role", label: "角色", type: "text" },
-                    { name: "password", label: "密码", type: "text" },
+                    { name: "name", label: "姓名" },
+                    { name: "phone", label: "电话" },
+                    { name: "org", label: "单位" },
+                    { name: "gender", label: "性别" },
+                    { name: "role", label: "角色" },
                     {
                         type: "operation",
                         label: "操作",
@@ -58,7 +61,7 @@
                                         type: "form",
                                         api: {
                                             method: "post",
-                                            url: "/api/mock/user/update"
+                                            url: "/api/user/update"
                                         },
                                         controls: [
                                             { type: "hidden", name: "id" },
@@ -97,7 +100,8 @@
                                 confirmText: "确定要删除该用户吗？",
                                 api: {
                                     method: "post",
-                                    url: "/api/user/delete"
+                                    url: "/api/user/delete",
+                                    data: { id: "${id}" }
                                 }
                             }
                         ]
@@ -107,8 +111,8 @@
                     {
                         type: "button",
                         label: "新增用户",
-                        actionType: "dialog",
                         level: "primary",
+                        actionType: "dialog",
                         dialog: {
                             title: "新增用户",
                             body: {
@@ -145,7 +149,11 @@
                             }
                         }
                     }
-                ]
+                ],
+                bulkActions: [],
+                perPage: 10,
+                pageField: "pageNum",
+                perPageField: "pageSize"
             }
         };
 
