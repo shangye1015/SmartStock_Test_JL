@@ -13,6 +13,7 @@ import java.util.List;
 public interface InventoryOrderMapper {
 
     int insert(InventoryOrder order);
+    Integer selectLastInsertId();
 
     int update(InventoryOrder order);
 

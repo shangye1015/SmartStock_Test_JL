@@ -15,6 +15,9 @@ public interface InventoryOrderItemMapper {
 
     int insert(InventoryOrderItem item);
 
+    Integer selectLastInsertId();
+
+
     int deleteByOrderId(@Param("orderId") Integer orderId);
 
     List<InventoryOrderItem> selectByOrderId(@Param("orderId") Integer orderId);
