@@ -2,40 +2,37 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>库存统计</title>
+    <title>分类管理</title>
     <link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" />
     <link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet" />
     <link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet" />
     <script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
-    <style>
-        html, body, #root { margin: 0; padding: 0; height: 100%; }
-    </style>
+    <style> html, body, #root { margin: 0; height: 100%; } </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script>
-    (function() {
+    (function () {
         const amis = amisRequire('amis/embed');
 
         const schema = {
             type: "page",
-            title: "库存统计",
+            title: "物品分类管理(品类少弹框多页面)",
             body: {
                 type: "crud",
                 api: {
                     method: "post",
-                    url: "/api/inventory/list",
+                    url: "/api/category/list",
                     data: {
                         page: "$page",
                         size: "$perPage",
-                        warehouseName: "$warehouseName",
-                        itemName: "$itemName"
+                        name: "$name"
                     },
                     adaptor(payload) {
                         return {
                             status: 0,
-                            msg: 'success',
+                            msg: "success",
                             data: {
                                 items: payload.data.records || [],
                                 total: payload.data.total || 0
@@ -51,50 +48,108 @@
                         wrapWithPanel: false,
                         submitText: "",
                         controls: [
-                            {
-                                type: "text",
-                                name: "warehouseName",
-                                label: "仓库名称",
-                                placeholder: "模糊查询"
-                            },
-                            {
-                                type: "text",
-                                name: "itemName",
-                                label: "物品名称",
-                                placeholder: "模糊查询"
-                            },
-                            {
-                                type: "submit",
-                                label: "查询",
-                                level: "primary"
-                            },
-                            {
-                                type: "reset",
-                                label: "重置"
-                            }
+                            { type: "text", name: "name", label: "分类名称", placeholder: "模糊搜索" },
+                            { type: "submit", label: "查询", level: "primary" },
+                            { type: "reset", label: "重置" }
                         ]
                     }
                 },
                 columns: [
-                    { name: "warehouseName", label: "仓库名称", sortable: true },
-                    { name: "itemName", label: "物品名称", sortable: true },
-                    { name: "categoryName", label: "分类名称" },
-                    { name: "specification", label: "规格" },
-                    { name: "unit", label: "单位" },
-                    { name: "quantity", label: "库存数量", type: "number", sortable: true },
+                    { name: "name", label: "分类名称", sortable: true },
+                    { name: "sortOrder", label: "排序号", type: "number" },
                     {
-                        name: "lastUpdated",
-                        label: "最后更新时间",
-                        type: "datetime",
-                        sortable: true,
-                        // 时间格式化，可根据后端格式调整
-                        // format: "YYYY-MM-DD HH:mm:ss"
+                        name: "status",
+                        label: "状态",
+                        type: "mapping",
+                        map: {
+                            1: "启用",
+                            0: "禁用",
+                            "*": "-"
+                        }
+                    },
+                    {
+                        type: "operation",
+                        label: "操作",
+                        buttons: [
+                            {
+                                label: "编辑",
+                                type: "button",
+                                level: "link",
+                                actionType: "dialog",
+                                dialog: {
+                                    title: "编辑分类",
+                                    body: {
+                                        type: "form",
+                                        api: {
+                                            method: "post",
+                                            url: "/api/category/update"
+                                        },
+                                        controls: [
+                                            { type: "hidden", name: "id" },
+                                            { type: "text", name: "name", label: "分类名称", required: true },
+                                            { type: "input-number", name: "sortOrder", label: "排序号" },
+                                            {
+                                                type: "select",
+                                                name: "status",
+                                                label: "状态",
+                                                options: [
+                                                    { label: "启用", value: 1 },
+                                                    { label: "禁用", value: 0 }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                label: "删除",
+                                type: "button",
+                                level: "link",
+                                confirmText: "确定要删除该分类吗？",
+                                actionType: "ajax",
+                                api: {
+                                    method: "post",
+                                    url: "/api/category/delete",
+                                    data: { id: "${id}" }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                toolbar: [
+                    {
+                        label: "新增分类",
+                        type: "button",
+                        level: "primary",
+                        actionType: "dialog",
+                        dialog: {
+                            title: "新增分类",
+                            body: {
+                                type: "form",
+                                api: {
+                                    method: "post",
+                                    url: "/api/category/create"
+                                },
+                                controls: [
+                                    { type: "text", name: "name", label: "分类名称", required: true },
+                                    { type: "input-number", name: "sortOrder", label: "排序号" },
+                                    {
+                                        type: "select",
+                                        name: "status",
+                                        label: "状态",
+                                        options: [
+                                            { label: "启用", value: 1 },
+                                            { label: "禁用", value: 0 }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
                     }
                 ],
                 perPage: 10,
                 pageField: "page",
                 perPageField: "size",
-                quickSaveApi: false,
                 bulkActions: []
             }
         };
