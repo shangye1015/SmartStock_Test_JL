@@ -5,10 +5,17 @@
 <mapper namespace="net.luculent.trenddbmanage.item.dao.ItemMapper">
 
     <!-- 插入新物品 -->
-    <insert id="insert" parameterType="net.luculent.trenddbmanage.item.entity.Item" useGeneratedKeys="true" keyProperty="id">
+    <!-- 不用 useGeneratedKeys -->
+    <insert id="insert" parameterType="net.luculent.trenddbmanage.item.entity.Item">
         INSERT INTO item (sku, name, category_id, specification, unit, price, status, created_at)
         VALUES (#{sku}, #{name}, #{categoryId}, #{specification}, #{unit}, #{price}, #{status}, CURRENT_TIMESTAMP)
     </insert>
+
+    <!-- 查询最后插入的自增ID -->
+    <select id="selectLastInsertId" resultType="int">
+        SELECT last_insert_rowid()
+    </select>
+
 
     <!-- 更新物品信息，动态更新非空字段 -->
     <update id="update" parameterType="net.luculent.trenddbmanage.item.entity.Item">
