@@ -5,10 +5,14 @@
 <mapper namespace="net.luculent.trenddbmanage.item.dao.CategoryMapper">
 
     <!-- 新增分类 -->
-    <insert id="insert" parameterType="net.luculent.trenddbmanage.item.entity.Category" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="net.luculent.trenddbmanage.item.entity.Category">
         INSERT INTO category (name, sort_order, status)
         VALUES (#{name}, #{sortOrder}, #{status})
     </insert>
+
+    <select id="selectLastInsertId" resultType="int">
+        SELECT last_insert_rowid()
+    </select>
 
     <!-- 更新分类，动态更新非空字段 -->
     <update id="update" parameterType="net.luculent.trenddbmanage.item.entity.Category">

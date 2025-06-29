@@ -33,6 +33,10 @@ public class CategoryServiceImpl implements CategoryService {
                 .status(req.getStatus() != null ? req.getStatus() : 1)
                 .build();
         categoryMapper.insert(category);
+
+        // 获取主键ID
+        int id = categoryMapper.selectLastInsertId();
+        category.setId(id);
     }
 
     @Override

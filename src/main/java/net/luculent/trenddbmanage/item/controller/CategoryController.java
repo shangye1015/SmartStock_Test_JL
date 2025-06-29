@@ -39,10 +39,11 @@ public class CategoryController {
     }
 
     @PostMapping("/delete")
-    public Result<Void> deleteCategory(@RequestParam Integer id) {
-        categoryService.deleteCategory(id);
+    public Result<Void> deleteCategory(@Validated @RequestBody CategoryDeleteRequest request) {
+        categoryService.deleteCategory(request.getId());
         return ResultUtils.success();
     }
+
 
     @PostMapping("/get")
     public Result<CategoryResponse> getCategory(@RequestParam Integer id) {

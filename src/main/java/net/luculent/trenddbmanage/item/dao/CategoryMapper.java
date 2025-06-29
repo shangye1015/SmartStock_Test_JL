@@ -24,6 +24,8 @@ public interface CategoryMapper {
      */
     int insert(Category category);
 
+    int selectLastInsertId();
+
     /**
      * 更新分类，动态更新非空字段
      * @param category 分类实体
