@@ -24,6 +24,8 @@ public interface ItemMapper {
      */
     int insert(Item item);
 
+    Integer selectLastInsertId();
+
     /**
      * 根据ID更新物品（支持动态更新非空字段）
      * @param item 物品实体

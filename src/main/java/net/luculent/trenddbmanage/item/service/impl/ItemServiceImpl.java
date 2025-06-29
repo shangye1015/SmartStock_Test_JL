@@ -36,6 +36,9 @@ public class ItemServiceImpl implements ItemService {
         Item item = BeanUtil.copyProperties(req, Item.class);
         item.setStatus(1); // 默认启用状态
         itemMapper.insert(item);
+        // 查询 SQLite 最后插入ID，手动设置回实体
+        Integer generatedId = itemMapper.selectLastInsertId();
+        item.setId(generatedId);
     }
 
     /**

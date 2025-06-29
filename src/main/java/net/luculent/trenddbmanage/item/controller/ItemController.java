@@ -6,6 +6,7 @@ import net.luculent.trenddbmanage.common.model.Result;
 import net.luculent.trenddbmanage.item.dto.*;
 import net.luculent.trenddbmanage.item.service.ItemService;
 import net.luculent.trenddbmanage.utils.ResultUtils;
+import net.luculent.trenddbmanage.warehouse.dto.WarehouseDeleteRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,14 +51,15 @@ public class ItemController {
 
     /**
      * 删除物品
-     * @param id 物品ID
+     * @param request 物品ID
      * @return 统一结果封装
      */
     @PostMapping("/delete")
-    public Result<Void> deleteItem(@RequestParam Integer id) {
-        itemService.deleteItem(id);
+    public Result<Void> deleteItem(@Validated @RequestBody WarehouseDeleteRequest request) {
+        itemService.deleteItem(request.getId());
         return ResultUtils.success();
     }
+
 
     /**
      * 根据ID查询物品详情
