@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>用户管理</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet" />
     <script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
+    <style> html, body, #root { height: 100%; margin: 0; } </style>
 </head>
 <body>
 <div id="root"></div>
@@ -22,156 +24,123 @@
                 api: {
                     method: "post",
                     url: "/api/user/list",
-                    requestAdaptor: function (api) {
-                        const body = {
-                            username: api.data.username || "",
-                            page: api.data.page || 1,
-                            size: api.data.perPage || 10
-                        };
-                        return {
-                            ...api,
-                            data: body
-                        };
+                    data: {
+                        page: "$page",
+                        perPage: "$perPage"
                     },
-                    adaptor: function (payload) {
-                        return {
-                            status: payload.status === 0 ? 0 : 1,
-                            msg: payload.message || '',
-                            data: {
-                                items: payload.data.records,
-                                total: payload.data.total
-                            }
-                        };
+                    responseData: {
+                        items: [
+                            { id: 1, name: "张三", phone: "13800138000", org: "技术部", gender: "男", role: "管理员", password: "******" },
+                            { id: 2, name: "李四", phone: "13800138001", org: "财务部", gender: "女", role: "普通用户", password: "******" }
+                        ],
+                        total: 2
                     }
                 },
-                filter: {
-                    title: "条件查询",
-                    submitText: "",
-                    body: [
-                        {
-                            type: "input-text",
-                            name: "username",
-                            label: "用户名",
-                            placeholder: "请输入用户名"
-                        },
-                        {
-                            type: "submit",
-                            label: "查询",
-                            level: "primary"
-                        }
-                    ]
-                },
-                perPage: 10,
                 columns: [
-                    { name: "id", label: "ID", sortable: true },
-                    { name: "username", label: "用户名" },
-                    { name: "name", label: "姓名" },
-                    { name: "phone", label: "电话" },
-                    { name: "department", label: "单位" },
-                    { name: "position", label: "职位" },
-                    { name: "age", label: "年龄" },
-                    { name: "gender", label: "性别" },
-                    {
-                        name: "roleId",
-                        label: "角色",
-                        type: "mapping",
-                        map: {
-                            1: "管理员",
-                            2: "普通用户",
-                            '*': "未知角色"
-                        }
-                    },
-                    {
-                        name: "createdAt",
-                        label: "创建时间",
-                        type: "date",
-                        format: "YYYY-MM-DD HH:mm:ss"
-                    },
+                    { name: "name", label: "姓名", type: "text" },
+                    { name: "phone", label: "电话", type: "text" },
+                    { name: "org", label: "单位", type: "text" },
+                    { name: "gender", label: "性别", type: "text" },
+                    { name: "role", label: "角色", type: "text" },
+                    { name: "password", label: "密码", type: "text" },
                     {
                         type: "operation",
                         label: "操作",
                         buttons: [
                             {
-                                label: "编辑",
                                 type: "button",
-                                level: "link",
+                                label: "编辑",
                                 actionType: "dialog",
+                                level: "link",
                                 dialog: {
                                     title: "编辑用户",
                                     body: {
                                         type: "form",
-                                        api: "put:/user/${id}", // 请根据实际情况更改
-                                        body: [
-                                            { name: "name", type: "input-text", label: "姓名", required: true },
-                                            { name: "phone", type: "input-text", label: "电话" },
-                                            { name: "department", type: "input-text", label: "单位" },
-                                            { name: "position", type: "input-text", label: "职位" },
-                                            { name: "age", type: "input-number", label: "年龄" },
+                                        api: {
+                                            method: "post",
+                                            url: "/api/mock/user/update"
+                                        },
+                                        controls: [
+                                            { type: "hidden", name: "id" },
+                                            { type: "text", name: "name", label: "姓名", required: true },
+                                            { type: "text", name: "phone", label: "电话", required: true },
+                                            { type: "text", name: "org", label: "单位" },
                                             {
-                                                name: "gender",
                                                 type: "select",
+                                                name: "gender",
                                                 label: "性别",
-                                                options: ["男", "女"]
+                                                options: [
+                                                    { label: "男", value: "男" },
+                                                    { label: "女", value: "女" }
+                                                ]
                                             },
                                             {
-                                                name: "roleId",
                                                 type: "select",
+                                                name: "role",
                                                 label: "角色",
                                                 options: [
-                                                    { label: "管理员", value: 1 },
-                                                    { label: "普通用户", value: 2 }
+                                                    { label: "管理员", value: "管理员" },
+                                                    { label: "普通用户", value: "普通用户" },
+                                                    { label: "访客", value: "访客" }
                                                 ]
-                                            }
+                                            },
+                                            { type: "password", name: "password", label: "密码" }
                                         ]
                                     }
                                 }
                             },
                             {
-                                label: "删除",
                                 type: "button",
-                                level: "link",
-                                className: "text-danger",
-                                confirmText: "确定要删除该用户吗？",
+                                label: "删除",
                                 actionType: "ajax",
-                                api: "delete:/user/${id}"
+                                level: "link",
+                                confirmText: "确定要删除该用户吗？",
+                                api: {
+                                    method: "post",
+                                    url: "/api/user/delete"
+                                }
                             }
                         ]
                     }
                 ],
-                headerToolbar: [
+                toolbar: [
                     {
-                        label: "新增用户",
                         type: "button",
+                        label: "新增用户",
                         actionType: "dialog",
                         level: "primary",
                         dialog: {
                             title: "新增用户",
                             body: {
                                 type: "form",
-                                api: "post:/user", // 请根据你的新增接口改
-                                body: [
-                                    { name: "username", type: "input-text", label: "用户名", required: true },
-                                    { name: "name", type: "input-text", label: "姓名", required: true },
-                                    { name: "phone", type: "input-text", label: "电话" },
-                                    { name: "department", type: "input-text", label: "单位" },
-                                    { name: "position", type: "input-text", label: "职位" },
-                                    { name: "password", type: "input-password", label: "密码", required: true },
-                                    { name: "age", type: "input-number", label: "年龄" },
+                                api: {
+                                    method: "post",
+                                    url: "/api/user/create"
+                                },
+                                controls: [
+                                    { type: "text", name: "name", label: "姓名", required: true },
+                                    { type: "text", name: "phone", label: "电话", required: true },
+                                    { type: "text", name: "org", label: "单位" },
                                     {
-                                        name: "gender",
                                         type: "select",
+                                        name: "gender",
                                         label: "性别",
-                                        options: ["男", "女"]
+                                        options: [
+                                            { label: "男", value: "男" },
+                                            { label: "女", value: "女" }
+                                        ]
                                     },
                                     {
-                                        name: "roleId",
                                         type: "select",
+                                        name: "role",
                                         label: "角色",
                                         options: [
-                                            { label: "管理员", value: 1 },
-                                            { label: "普通用户", value: 2 }
+                                            { label: "管理员", value: "管理员" },
+                                            { label: "普通用户", value: "普通用户" },
+                                            { label: "访客", value: "访客" }
                                         ]
-                                    }
+                                    },
+                                    { type: "password", name: "password", label: "密码", required: true }
                                 ]
                             }
                         }
@@ -180,7 +149,7 @@
             }
         };
 
-        amis.embed("#root", schema);
+        amis.embed('#root', schema);
     })();
 </script>
 </body>
