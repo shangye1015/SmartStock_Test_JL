@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>出入库管理</title>
+    <link href="https://unpkg.com/amis@6.0.0/sdk/sdk.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/helper.css" rel="stylesheet" />
+    <link href="https://unpkg.com/amis@6.0.0/sdk/iconfont.css" rel="stylesheet" />
+    <script src="https://unpkg.com/amis@6.0.0/sdk/sdk.js"></script>
+    <style> html, body, #root { margin: 0; height: 100%; } </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+    (function () {
+        const amis = amisRequire('amis/embed');
+
+        const schema = {
+            type: "page",
+            title: "出入库管理",
+            body: {
+                type: "crud",
+                api: {
+                    method: "post",
+                    url: "/api/inventory-orders/list",
+                    data: {
+                        page: "$page",
+                        size: "$perPage"
+                    },
+                    adaptor(payload) {
+                        return {
+                            status: 0,
+                            msg: "success",
+                            data: {
+                                items: payload.data.records || [],
+                                total: payload.data.total || 0
+                            }
+                        };
+                    }
+                },
+                toolbar: [
+                    {
+                        type: "button",
+                        label: "新增出入库单",
+                        level: "primary",
+                        actionType: "dialog",
+                        dialog: {
+                            title: "新增出入库单",
+                            size: "lg",
+                            body: {
+                                type: "form",
+                                api: {
+                                    method: "post",
+                                    url: "/api/inventory-orders/create"
+                                },
+                                controls: [
+                                    {
+                                        type: "input-text",
+                                        name: "orderCode",
+                                        label: "单据编号",
+                                        required: true
+                                    },
+                                    {
+                                        type: "select",
+                                        name: "recordType",
+                                        label: "出入库类型",
+                                        required: true,
+                                        options: [
+                                            { label: "入库", value: "IN" },
+                                            { label: "出库", value: "OUT" }
+                                        ]
+                                    },
+                                    {
+                                        type: "input-number",
+                                        name: "warehouseId",
+                                        label: "仓库ID",
+                                        required: true
+                                    },
+                                    {
+                                        type: "input-text",
+                                        name: "operator",
+                                        label: "操作人"
+                                    },
+                                    {
+                                        type: "textarea",
+                                        name: "remark",
+                                        label: "备注"
+                                    },
+                                    {
+                                        type: "input-table",
+                                        name: "items",
+                                        label: "出入库明细",
+                                        required: true,
+                                        addable: true,
+                                        removable: true,
+                                        editable: true,
+                                        needConfirm: false,
+                                        value: [
+                                            { itemId: 101, quantity: 5, remark: "示例备注" }
+                                        ],
+                                        columns: [
+                                            {
+                                                name: "itemId",
+                                                label: "物品ID",
+                                                type: "input-number",
+                                                required: true
+                                            },
+                                            {
+                                                name: "quantity",
+                                                label: "数量",
+                                                type: "input-number",
+                                                required: true
+                                            },
+                                            {
+                                                name: "remark",
+                                                label: "备注",
+                                                type: "input-text"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                columns: [
+                    { name: "orderCode", label: "单据编号", sortable: true },
+                    { name: "recordType", label: "类型", type: "mapping", map: { IN: "入库", OUT: "出库" } },
+                    { name: "warehouseId", label: "仓库ID" },
+                    { name: "operator", label: "操作人" },
+                    {
+                        name: "status",
+                        label: "状态",
+                        type: "mapping",
+                        map: {
+                            "PENDING": "未完成",
+                            "COMPLETED": "完成"
+                        },
+                        default: "未知状态"
+                    },
+                    {
+                        type: "operation",
+                        label: "操作",
+                        buttons: [
+                            {
+                                label: "详情",
+                                type: "button",
+                                level: "link",
+                                actionType: "dialog",
+                                dialog: {
+                                    title: "单据详情",
+                                    size: "lg",
+                                    body: {
+                                        type: "service",
+                                        api: {
+                                            method: "post",
+                                            url: "/api/inventory-orders/get",
+                                            data: { orderId: "${id}" }
+                                        },
+                                        body: [
+                                            { type: "tpl", tpl: "单据编号：${orderCode}" },
+                                            { type: "tpl", tpl: "类型：${recordType}" },
+                                            { type: "tpl", tpl: "仓库ID：${warehouseId}" },
+                                            { type: "tpl", tpl: "操作人：${operator}" },
+                                            {
+                                                type: "table",
+                                                name: "items",
+                                                label: "明细",
+                                                columns: [
+                                                    { name: "itemId", label: "物品ID" },
+                                                    { name: "quantity", label: "数量" },
+                                                    { name: "remark", label: "备注" }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                label: "确认",
+                                type: "button",
+                                level: "success",
+                                confirmText: "确定要确认此出入库单吗？",
+                                actionType: "ajax",
+                                api: {
+                                    method: "post",
+                                    url: "/api/inventory-orders/confirm",
+                                    data: { orderId: "${id}" }
+                                }
+                            },
+                            {
+                                label: "删除",
+                                type: "button",
+                                level: "danger",
+                                confirmText: "确定要删除此单据吗？",
+                                actionType: "ajax",
+                                api: {
+                                    method: "post",
+                                    url: "/api/inventory-orders/delete",
+                                    data: { orderId: "${id}" }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                perPage: 10,
+                pageField: "page",
+                perPageField: "size",
+                bulkActions: []
+            }
+        };
+
+        amis.embed('#root', schema);
+    })();
+</script>
+</body>
+</html>
