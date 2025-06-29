@@ -3,6 +3,8 @@ package net.luculent.trenddbmanage.warehouseflow.service.impl;
 import net.luculent.trenddbmanage.common.model.PageResult;
 import net.luculent.trenddbmanage.inventory.dao.InventoryMapper;
 import net.luculent.trenddbmanage.inventory.entity.Inventory;
+import net.luculent.trenddbmanage.warehouse.dao.WarehouseMapper;
+import net.luculent.trenddbmanage.warehouse.entity.Warehouse;
 import net.luculent.trenddbmanage.warehouseflow.dao.InventoryOrderItemMapper;
 import net.luculent.trenddbmanage.warehouseflow.dao.InventoryOrderMapper;
 import net.luculent.trenddbmanage.warehouseflow.dto.*;
@@ -31,6 +33,7 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
     private final InventoryOrderMapper orderMapper;
     private final InventoryOrderItemMapper itemMapper;
     private final InventoryMapper inventoryMapper;
+    private  WarehouseMapper warehouseMapper;
 
     public InventoryOrderServiceImpl(InventoryOrderMapper orderMapper,
                                      InventoryOrderItemMapper itemMapper,
@@ -47,9 +50,13 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
         BeanUtils.copyProperties(request, order);
         order.setStatus("PENDING");
         order.setOperationTime(LocalDateTime.now());
+        String orderCode = "ORD" + System.currentTimeMillis();
+        order.setOrderCode(orderCode);
 
         // 新增主单
         orderMapper.insert(order);
+        Integer id = orderMapper.selectLastInsertId();
+        order.setId(id); // 可选：用于返回或后续操作
 
         // 新增明细
         List<InventoryOrderItem> items = request.getItems().stream().map(itemReq -> {
@@ -60,7 +67,11 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
             return item;
         }).collect(Collectors.toList());
 
-        items.forEach(itemMapper::insert);
+        for (InventoryOrderItem item : items) {
+            itemMapper.insert(item);
+            item.setId(itemMapper.selectLastInsertId());
+        }
+
     }
 
     @Override
@@ -123,15 +134,14 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
             return resp;
         }).collect(Collectors.toList());
 
-        return InventoryOrderItemResponse.builder()
+        InventoryOrderItemResponse build = InventoryOrderItemResponse.builder()
                 .id(order.getId())
-                .itemId(null) // 单据层面没itemId
-                .itemName(null)
-                .quantity(null)
-                .unit(null)
                 .build();
+        return  build;
 
     }
+
+
 
     @Override
     public PageResult<InventoryOrderResponse> listOrders(int page, int size) {
@@ -140,8 +150,16 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
 
         List<InventoryOrderResponse> responses = orders.stream().map(order -> {
             InventoryOrderResponse resp = new InventoryOrderResponse();
-            BeanUtils.copyProperties(order, resp);
-            // 查询明细
+
+            resp.setId(order.getId());
+            resp.setOrderCode(order.getOrderCode());
+            resp.setRecordType(order.getRecordType());
+            resp.setWarehouseId(order.getWarehouseId());
+            resp.setOperator(order.getOperator());
+            resp.setRemark(order.getRemark());
+            resp.setStatus(order.getStatus());
+            resp.setOperationTime(order.getOperationTime());
+
             List<InventoryOrderItem> items = itemMapper.selectByOrderId(order.getId());
             List<InventoryOrderItemResponse> itemResponses = items.stream().map(item -> {
                 InventoryOrderItemResponse itemResp = new InventoryOrderItemResponse();
@@ -149,8 +167,11 @@ public class InventoryOrderServiceImpl implements InventoryOrderService {
                 return itemResp;
             }).collect(Collectors.toList());
             resp.setItems(itemResponses);
+
             return resp;
         }).collect(Collectors.toList());
+
+
 
         return new PageResult<>(total, responses);
     }

@@ -1,6 +1,9 @@
 package net.luculent.trenddbmanage.warehouseflow.controller;
 
+import lombok.RequiredArgsConstructor;
 import net.luculent.trenddbmanage.common.model.PageResult;
+import net.luculent.trenddbmanage.common.model.Result;
+import net.luculent.trenddbmanage.utils.ResultUtils;
 import net.luculent.trenddbmanage.warehouseflow.dto.*;
 import net.luculent.trenddbmanage.warehouseflow.service.InventoryOrderService;
 import org.springframework.validation.annotation.Validated;
@@ -10,69 +13,52 @@ import javax.validation.Valid;
 
 /**
  * 出入库单据接口控制器
+ * 提供单据的增删改查、确认等功能
  *
  * @author shangye
  * @date 2025-06-28
  */
 @RestController
 @RequestMapping("/api/inventory-orders")
+@RequiredArgsConstructor
 @Validated
 public class InventoryOrderController {
 
     private final InventoryOrderService orderService;
 
-    public InventoryOrderController(InventoryOrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    /**
-     * 创建出入库单据
-     */
-    @PostMapping
-    public void createOrder(@Valid @RequestBody InventoryOrderRequest request) {
+    @PostMapping("/create")
+    public Result<Void> createOrder(@Valid @RequestBody InventoryOrderRequest request) {
         orderService.createOrder(request);
+        return ResultUtils.success();
     }
 
-    /**
-     * 修改出入库单据（仅 PENDING 状态允许）
-     */
-    @PutMapping
-    public void updateOrder(@Valid @RequestBody InventoryOrderRequest request) {
+    @PostMapping("/update")
+    public Result<Void> updateOrder(@Valid @RequestBody InventoryOrderRequest request) {
         orderService.updateOrder(request);
+        return ResultUtils.success();
     }
 
-    /**
-     * 删除出入库单据（仅 PENDING 状态允许）
-     */
-    @DeleteMapping("/{orderId}")
-    public void deleteOrder(@PathVariable Integer orderId) {
-        orderService.deleteOrder(orderId);
+    @PostMapping("/delete")
+    public Result<Void> deleteOrder(@Valid @RequestBody InventoryOrderDeleteRequest request) {
+        orderService.deleteOrder(request.getOrderId());
+        return ResultUtils.success();
     }
 
-    /**
-     * 查询单据详情（含明细）
-     */
-    @GetMapping("/{orderId}")
-    public InventoryOrderItemResponse getOrderDetail(@PathVariable Integer orderId) {
-        return orderService.getOrderDetail(orderId);
+    @PostMapping("/get")
+    public Result<InventoryOrderItemResponse> getOrderDetail(@Valid @RequestBody InventoryOrderGetRequest request) {
+        InventoryOrderItemResponse detail = orderService.getOrderDetail(request.getOrderId());
+        return ResultUtils.success(detail);
     }
 
-    /**
-     * 查询出入库单据分页列表
-     */
-    @GetMapping
-    public PageResult<InventoryOrderResponse> listOrders(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return orderService.listOrders(page, size);
+    @PostMapping("/list")
+    public Result<PageResult<InventoryOrderResponse>> listOrders(@Valid @RequestBody InventoryOrderQueryRequest request) {
+        PageResult<InventoryOrderResponse> result = orderService.listOrders(request.getPage(), request.getSize());
+        return ResultUtils.success(result);
     }
 
-    /**
-     * 确认出入库操作
-     */
-    @PostMapping("/{orderId}/confirm")
-    public void confirmOrder(@PathVariable Integer orderId) {
-        orderService.confirmOrder(orderId);
+    @PostMapping("/confirm")
+    public Result<Void> confirmOrder(@Valid @RequestBody InventoryOrderConfirmRequest request) {
+        orderService.confirmOrder(request.getOrderId());
+        return ResultUtils.success();
     }
 }
-
